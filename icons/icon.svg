@@ -1,0 +1,11 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="128" height="128" rx="24" fill="#3b82f6"/>
+  
+  <!-- 书签图标 -->
+  <path d="M40 30 L40 98 L64 82 L88 98 L88 30 Z" fill="#ffffff" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- AI 星星 -->
+  <circle cx="70" cy="45" r="8" fill="#fbbf24"/>
+  <path d="M70 37 L72 43 L78 43 L73 47 L75 53 L70 49 L65 53 L67 47 L62 43 L68 43 Z" fill="#ffffff"/>
+</svg>

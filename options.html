@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Bookmark Manager - 设置</title>
+  <link rel="stylesheet" href="styles/options.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>⚙️ 设置</h1>
+      <p class="subtitle">配置 AI 书签管理器</p>
+    </header>
+
+    <main class="main-content">
+      <!-- OpenAI 配置 -->
+      <section class="section">
+        <h2 class="section-title">🤖 OpenAI 配置</h2>
+        <div class="form-group">
+          <label for="apiKey">API Key</label>
+          <div class="input-group">
+            <input 
+              type="password" 
+              id="apiKey" 
+              placeholder="sk-..." 
+              autocomplete="off"
+            />
+            <button id="toggleApiKey" class="btn-icon" title="显示/隐藏">👁️</button>
+          </div>
+          <p class="help-text">
+            在 <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a> 获取您的 API Key
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="model">模型</label>
+          <select id="model">
+            <option value="gpt-4o-mini">GPT-4o Mini (推荐)</option>
+            <option value="gpt-4o">GPT-4o</option>
+            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+          </select>
+          <p class="help-text">
+            推荐使用 GPT-4o Mini，性价比最高
+          </p>
+        </div>
+
+        <div class="form-group">
+          <button id="testConnection" class="btn-secondary">
+            <span>🔌</span> 测试连接
+          </button>
+          <span id="testResult" class="test-result"></span>
+        </div>
+      </section>
+
+      <!-- 功能设置 -->
+      <section class="section">
+        <h2 class="section-title">🎯 功能设置</h2>
+        
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="autoClassify" />
+            <span>自动分类新书签</span>
+          </label>
+          <p class="help-text">
+            新添加的书签将自动使用 AI 进行分类
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="theme">主题</label>
+          <select id="theme">
+            <option value="light">浅色</option>
+            <option value="dark">深色</option>
+            <option value="auto">跟随系统</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- 数据管理 -->
+      <section class="section">
+        <h2 class="section-title">💾 数据管理</h2>
+        
+        <div class="form-group">
+          <button id="exportData" class="btn-secondary">
+            <span>📤</span> 导出数据
+          </button>
+          <p class="help-text">
+            导出所有书签分类和标签数据为 JSON 文件
+          </p>
+        </div>
+
+        <div class="form-group">
+          <button id="importData" class="btn-secondary">
+            <span>📥</span> 导入数据
+          </button>
+          <input type="file" id="importFile" accept=".json" style="display: none;" />
+          <p class="help-text">
+            从 JSON 文件导入书签分类和标签数据
+          </p>
+        </div>
+
+        <div class="form-group">
+          <button id="exportBookmarks" class="btn-secondary">
+            <span>📋</span> 导出书签 (HTML)
+          </button>
+          <p class="help-text">
+            导出书签为标准 HTML 格式
+          </p>
+        </div>
+
+        <div class="form-group">
+          <button id="clearData" class="btn-danger">
+            <span>🗑️</span> 清除所有数据
+          </button>
+          <p class="help-text">
+            清除所有分类和标签数据（不会删除书签本身）
+          </p>
+        </div>
+      </section>
+
+      <!-- 统计信息 -->
+      <section class="section">
+        <h2 class="section-title">📊 统计信息</h2>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">书签总数</div>
+            <div class="stat-value" id="statTotalBookmarks">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">已分类</div>
+            <div class="stat-value" id="statClassified">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">分类数量</div>
+            <div class="stat-value" id="statCategories">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">标签数量</div>
+            <div class="stat-value" id="statTags">0</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 关于 -->
+      <section class="section">
+        <h2 class="section-title">ℹ️ 关于</h2>
+        <div class="about-content">
+          <p><strong>AI Bookmark Manager</strong> v1.0.0</p>
+          <p>智能书签管理浏览器插件</p>
+          <p class="help-text">
+            使用 AI 技术自动分类、整理和搜索您的书签
+          </p>
+          <div class="links">
+            <a href="https://github.com/simonguo/bookmark-ai" target="_blank">GitHub</a>
+            <span>•</span>
+            <a href="mailto:simonguo.2009@gmail.com" id="reportIssue">反馈问题</a>
+            <span>•</span>
+            <a href="user-guide.html" target="_blank" id="viewDocs">使用文档</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <button id="saveSettings" class="btn-primary">
+        <span>💾</span> 保存设置
+      </button>
+      <button id="resetSettings" class="btn-secondary">
+        <span>↺</span> 重置
+      </button>
+    </footer>
+
+    <!-- 通知提示 -->
+    <div id="notification" class="notification" style="display: none;">
+      <span id="notificationText"></span>
+    </div>
+  </div>
+
+  <script src="utils/storage.js"></script>
+  <script src="utils/bookmarks.js"></script>
+  <script src="utils/openai.js"></script>
+  <script src="scripts/options.js"></script>
+</body>
+</html>

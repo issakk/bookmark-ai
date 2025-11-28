@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Bookmark Manager - 使用说明</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+      line-height: 1.8;
+      color: #1f2937;
+      background: #f9fafb;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px 60px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #111827;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 3px solid #3b82f6;
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #1f2937;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      padding-left: 12px;
+      border-left: 4px solid #3b82f6;
+    }
+
+    h3 {
+      font-size: 22px;
+      color: #374151;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: #4b5563;
+    }
+
+    .intro {
+      font-size: 18px;
+      color: #6b7280;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      border-left: 4px solid #3b82f6;
+    }
+
+    ul, ol {
+      margin-left: 30px;
+      margin-bottom: 20px;
+    }
+
+    li {
+      margin-bottom: 12px;
+      color: #4b5563;
+    }
+
+    code {
+      background: #f3f4f6;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+      font-size: 14px;
+      color: #dc2626;
+    }
+
+    .feature-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .feature-box h4 {
+      color: #1e40af;
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .tip {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .tip strong {
+      color: #92400e;
+    }
+
+    .warning {
+      background: #fee2e2;
+      border-left: 4px solid #ef4444;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .warning strong {
+      color: #991b1b;
+    }
+
+    .success {
+      background: #d1fae5;
+      border-left: 4px solid #10b981;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .success strong {
+      color: #065f46;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background: #f9fafb;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .kbd {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 13px;
+      line-height: 1.4;
+      color: #1f2937;
+      background-color: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      font-family: monospace;
+    }
+
+    .screenshot {
+      max-width: 100%;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      margin: 20px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .toc {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 30px 0;
+    }
+
+    .toc h3 {
+      margin-top: 0;
+      color: #111827;
+    }
+
+    .toc ul {
+      margin-left: 20px;
+    }
+
+    .toc a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+
+    .toc a:hover {
+      text-decoration: underline;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📚 AI Bookmark Manager 使用说明</h1>
+    
+    <div class="intro">
+      <strong>AI Bookmark Manager</strong> 是一款智能书签管理浏览器扩展，使用 AI 技术自动分类、整理和搜索您的书签，让书签管理变得简单高效。
+    </div>
+
+    <div class="toc">
+      <h3>📖 目录</h3>
+      <ul>
+        <li><a href="#installation">安装与配置</a></li>
+        <li><a href="#basic-usage">基础使用</a></li>
+        <li><a href="#ai-features">AI 智能功能</a></li>
+        <li><a href="#advanced">高级功能</a></li>
+        <li><a href="#shortcuts">快捷键</a></li>
+        <li><a href="#faq">常见问题</a></li>
+      </ul>
+    </div>
+
+    <h2 id="installation">🚀 安装与配置</h2>
+
+    <h3>1. 安装扩展</h3>
+    <ol>
+      <li>打开 Chrome/Edge 浏览器</li>
+      <li>访问 <code>chrome://extensions/</code> 或 <code>edge://extensions/</code></li>
+      <li>开启右上角的"开发者模式"</li>
+      <li>点击"加载已解压的扩展程序"</li>
+      <li>选择扩展文件夹</li>
+      <li>扩展图标出现在工具栏，安装完成！</li>
+    </ol>
+
+    <h3>2. 配置 OpenAI API</h3>
+    <div class="feature-box">
+      <h4>获取 API Key</h4>
+      <ol>
+        <li>访问 <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a></li>
+        <li>注册或登录账号</li>
+        <li>创建新的 API Key</li>
+        <li>复制 API Key（格式：sk-...）</li>
+      </ol>
+    </div>
+
+    <ol start="5">
+      <li>点击扩展图标，自动打开配置页面</li>
+      <li>粘贴 API Key</li>
+      <li>选择模型：推荐 <code>gpt-4o-mini</code>（性价比最高）</li>
+      <li>点击"测试连接"确保配置正确</li>
+      <li>点击"保存设置"</li>
+    </ol>
+
+    <div class="success">
+      <strong>✅ 配置完成！</strong> 现在可以开始使用 AI 功能了。
+    </div>
+
+    <h2 id="basic-usage">📖 基础使用</h2>
+
+    <h3>保存书签</h3>
+    <p>有三种方式保存当前页面为书签：</p>
+    <ul>
+      <li><strong>快捷键</strong>：按 <span class="kbd">Cmd+Shift+S</span> (Mac) 或 <span class="kbd">Ctrl+Shift+S</span> (Windows)</li>
+      <li><strong>侧边栏</strong>：打开侧边栏，点击"保存当前页面"按钮</li>
+      <li><strong>浏览器原生</strong>：使用浏览器自带的书签功能</li>
+    </ul>
+
+    <h3>查看书签</h3>
+    <ol>
+      <li>点击扩展图标打开侧边栏</li>
+      <li>书签按文件夹/分类分组显示</li>
+      <li>点击文件夹名称展开/折叠</li>
+      <li>点击书签打开网页</li>
+    </ol>
+
+    <div class="tip">
+      <strong>💡 提示：</strong> 书签默认按照您的浏览器文件夹结构分类。使用 AI 分类后，会优先显示用户文件夹，其次是 AI 分类。
+    </div>
+
+    <h3>搜索书签</h3>
+    <ol>
+      <li>在侧边栏顶部的搜索框输入关键词</li>
+      <li>实时显示匹配结果</li>
+      <li>支持搜索标题、URL、标签和分类</li>
+      <li>勾选"AI 搜索"启用语义搜索</li>
+    </ol>
+
+    <h3>筛选书签</h3>
+    <ul>
+      <li><strong>按分类筛选</strong>：在分类下拉框选择类别</li>
+      <li><strong>按标签筛选</strong>：在标签下拉框选择标签</li>
+      <li><strong>组合筛选</strong>：同时使用分类和标签筛选</li>
+      <li><strong>清除筛选</strong>：点击"清除筛选"按钮恢复</li>
+    </ul>
+
+    <h2 id="ai-features">🤖 AI 智能功能</h2>
+
+    <h3>AI 自动分类</h3>
+    <div class="feature-box">
+      <h4>功能说明</h4>
+      <p>AI 会分析每个书签的标题和 URL，自动生成：</p>
+      <ul>
+        <li><strong>分类</strong>：如技术、新闻、娱乐、购物等</li>
+        <li><strong>标签</strong>：3-5 个相关标签</li>
+        <li><strong>描述</strong>：一句话摘要</li>
+      </ul>
+    </div>
+
+    <p><strong>使用方法：</strong></p>
+    <ol>
+      <li>打开侧边栏</li>
+      <li>点击"AI 分类"按钮</li>
+      <li>确认对话框</li>
+      <li>等待 AI 处理（显示进度条）</li>
+      <li>完成后书签自动按分类分组</li>
+    </ol>
+
+    <div class="tip">
+      <strong>💡 成本说明：</strong> 使用 gpt-4o-mini 模型，分类 100 个书签约花费 $0.01-0.02，非常便宜。
+    </div>
+
+    <h3>AI 语义搜索</h3>
+    <p>与普通关键词搜索不同，AI 语义搜索能理解您的意图：</p>
+    <ul>
+      <li>搜索"学习前端" → 找到所有前端相关资源</li>
+      <li>搜索"买东西" → 找到所有购物网站</li>
+      <li>搜索"看新闻" → 找到所有新闻网站</li>
+    </ul>
+
+    <p><strong>使用方法：</strong></p>
+    <ol>
+      <li>在搜索框输入查询</li>
+      <li>勾选"AI 搜索"</li>
+      <li>等待 2-5 秒</li>
+      <li>查看匹配结果</li>
+    </ol>
+
+    <h2 id="advanced">⚙️ 高级功能</h2>
+
+    <h3>书签管理页面</h3>
+    <p>点击侧边栏的"管理页面"按钮，打开完整的书签管理界面。</p>
+
+    <div class="feature-box">
+      <h4>功能包括：</h4>
+      <ul>
+        <li><strong>批量操作</strong>：勾选多个书签，批量分类或删除</li>
+        <li><strong>添加书签</strong>：手动添加新书签</li>
+        <li><strong>编辑书签</strong>：修改标题、URL、分类、标签</li>
+        <li><strong>查找重复</strong>：检测重复的书签</li>
+        <li><strong>查找失效</strong>：检测失效的书签（如 127.0.0.1）</li>
+        <li><strong>视图切换</strong>：列表视图或网格视图</li>
+        <li><strong>排序</strong>：按标题、日期、URL 排序</li>
+      </ul>
+    </div>
+
+    <h3>查找失效书签</h3>
+    <p>自动检测以下类型的失效书签：</p>
+    <ul>
+      <li>本地链接（localhost, 127.0.0.1）</li>
+      <li>局域网链接（192.168.x.x, 10.x.x.x）</li>
+      <li>文件链接（file://）</li>
+      <li>Chrome 内部链接（chrome://）</li>
+      <li>临时/测试链接（包含 temp, test, example.com）</li>
+    </ul>
+
+    <p><strong>使用方法：</strong></p>
+    <ol>
+      <li>打开管理页面</li>
+      <li>点击"查找失效书签"</li>
+      <li>查看检测结果</li>
+      <li>确认后批量删除</li>
+    </ol>
+
+    <div class="warning">
+      <strong>⚠️ 注意：</strong> 删除操作不可恢复，请谨慎操作。建议先导出备份。
+    </div>
+
+    <h3>数据管理</h3>
+    <p>在配置页面的"数据管理"区域：</p>
+    <ul>
+      <li><strong>导出数据</strong>：导出分类和标签为 JSON 文件</li>
+      <li><strong>导出书签</strong>：导出为标准 HTML 格式</li>
+      <li><strong>导入数据</strong>：从 JSON 文件恢复数据</li>
+      <li><strong>清除数据</strong>：清除所有分类和标签（不删除书签）</li>
+    </ul>
+
+    <h3>主题设置</h3>
+    <p>支持三种主题模式：</p>
+    <ul>
+      <li><strong>浅色模式</strong>：明亮清爽</li>
+      <li><strong>深色模式</strong>：护眼舒适</li>
+      <li><strong>跟随系统</strong>：自动切换（默认）</li>
+    </ul>
+
+    <h2 id="shortcuts">⌨️ 快捷键</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>功能</th>
+          <th>Mac</th>
+          <th>Windows/Linux</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>保存当前页面</td>
+          <td><span class="kbd">Cmd+Shift+S</span></td>
+          <td><span class="kbd">Ctrl+Shift+S</span></td>
+        </tr>
+        <tr>
+          <td>打开侧边栏</td>
+          <td><span class="kbd">Cmd+Shift+B</span></td>
+          <td><span class="kbd">Ctrl+Shift+B</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="tip">
+      <strong>💡 提示：</strong> 可以在 <code>chrome://extensions/shortcuts</code> 自定义快捷键。
+    </div>
+
+    <h2 id="faq">❓ 常见问题</h2>
+
+    <h3>Q: 没有 OpenAI API Key 怎么办？</h3>
+    <p><strong>A:</strong> 访问 <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a> 注册并创建 API Key。新用户通常有免费额度。不使用 AI 功能的话，也可以正常使用基础的书签管理功能。</p>
+
+    <h3>Q: API 调用会很贵吗？</h3>
+    <p><strong>A:</strong> 使用 gpt-4o-mini 模型非常便宜，分类 100 个书签约 $0.01-0.02。一般用户每月花费不到 $1。</p>
+
+    <h3>Q: 数据安全吗？</h3>
+    <p><strong>A:</strong> 完全安全！所有数据存储在本地浏览器，API Key 加密保存，不会上传到任何服务器。只有在您主动触发 AI 功能时才会调用 OpenAI API。</p>
+
+    <h3>Q: 书签会被删除吗？</h3>
+    <p><strong>A:</strong> 不会。扩展只会添加分类和标签等元数据，不会删除或修改您的原始书签（除非您主动删除）。</p>
+
+    <h3>Q: 支持哪些浏览器？</h3>
+    <p><strong>A:</strong> 支持所有基于 Chromium 的浏览器：Chrome、Edge、Brave、Opera 等。暂不支持 Firefox。</p>
+
+    <h3>Q: AI 分类不准确怎么办？</h3>
+    <p><strong>A:</strong> 可以手动编辑书签的分类和标签。在管理页面点击编辑按钮，修改为正确的分类。</p>
+
+    <h3>Q: 如何备份数据？</h3>
+    <p><strong>A:</strong> 在配置页面点击"导出数据"保存 JSON 文件，或点击"导出书签 (HTML)"导出标准格式。建议定期备份。</p>
+
+    <h3>Q: 扩展占用资源多吗？</h3>
+    <p><strong>A:</strong> 非常轻量。内存占用 < 50MB，CPU 占用几乎为 0（空闲时）。不会影响浏览器性能。</p>
+
+    <h3>Q: 如何卸载？</h3>
+    <p><strong>A:</strong> 在 <code>chrome://extensions/</code> 找到扩展，点击"移除"。注意：卸载会删除所有分类和标签数据，但不会删除浏览器原生书签。</p>
+
+    <h3>Q: 遇到问题怎么办？</h3>
+    <p><strong>A:</strong> 可以通过以下方式获取帮助：</p>
+    <ul>
+      <li>查看浏览器控制台的错误信息</li>
+      <li>检查 API Key 配置和网络连接</li>
+      <li>访问 <a href="https://github.com/simonguo/bookmark-ai" target="_blank">GitHub 项目</a></li>
+      <li>发送邮件到 <a href="mailto:simonguo.2009@gmail.com">simonguo.2009@gmail.com</a></li>
+    </ul>
+
+    <hr style="margin: 40px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+    <div class="success">
+      <strong>🎉 开始使用吧！</strong> 让 AI 帮你整理书签，享受高效的书签管理体验。
+    </div>
+
+    <p style="text-align: center; color: #9ca3af; margin-top: 40px;">
+      <strong>AI Bookmark Manager</strong> v1.0.0<br>
+      Made with ❤️ by <a href="https://github.com/simonguo" target="_blank">Simon Guo</a>
+    </p>
+  </div>
+</body>
+</html>

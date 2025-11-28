@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>书签管理 - AI Bookmark Manager</title>
+  <link rel="stylesheet" href="styles/manage.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>📚 书签管理</h1>
+      </div>
+      
+      <div class="sidebar-stats">
+        <div class="stat-item">
+          <span class="stat-value" id="totalCount">0</span>
+          <span class="stat-label">总数</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="selectedCount">0</span>
+          <span class="stat-label">已选</span>
+        </div>
+      </div>
+
+      <div class="sidebar-actions">
+        <button id="addBookmarkBtn" class="btn-primary">
+          <span>➕</span> 添加书签
+        </button>
+        <button id="addFolderBtn" class="btn-secondary">
+          <span>📁</span> 新建文件夹
+        </button>
+      </div>
+
+      <div class="sidebar-tools">
+        <h3>工具</h3>
+        <button id="classifySelectedBtn" class="tool-btn">
+          <span>🤖</span> AI 分类选中项
+        </button>
+        <button id="findDuplicatesBtn" class="tool-btn">
+          <span>🔍</span> 查找重复
+        </button>
+        <button id="findInvalidBtn" class="tool-btn">
+          <span>⚠️</span> 查找失效书签
+        </button>
+        <button id="deleteSelectedBtn" class="tool-btn danger">
+          <span>🗑️</span> 删除选中项
+        </button>
+      </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <!-- 工具栏 -->
+      <div class="toolbar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="搜索书签..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="toolbar-actions">
+          <select id="sortBy">
+            <option value="title">按标题</option>
+            <option value="date">按日期</option>
+            <option value="url">按 URL</option>
+          </select>
+          
+          <select id="viewMode">
+            <option value="list">列表视图</option>
+            <option value="grid">网格视图</option>
+          </select>
+
+          <button id="selectAllBtn" class="btn-icon" title="全选">
+            <span>☑️</span>
+          </button>
+          
+          <button id="refreshBtn" class="btn-icon" title="刷新">
+            <span>🔄</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 结果显示区域 -->
+      <div id="resultsPanel" class="results-panel" style="display: none;">
+        <div class="results-header">
+          <h3 id="resultsTitle">检测结果</h3>
+          <button id="closeResults" class="btn-icon">✕</button>
+        </div>
+        <div id="resultsContent" class="results-content"></div>
+        <div class="results-footer">
+          <button id="deleteResultsBtn" class="btn-danger">删除这些书签</button>
+          <button id="cancelResultsBtn" class="btn-secondary">取消</button>
+        </div>
+      </div>
+
+      <!-- 书签列表 -->
+      <div id="bookmarkList" class="bookmark-list">
+        <div class="loading-indicator" id="loadingIndicator">
+          <div class="spinner"></div>
+          <p>加载中...</p>
+        </div>
+      </div>
+
+      <!-- 空状态 -->
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <span class="empty-icon">📭</span>
+        <h2>暂无书签</h2>
+        <p>点击"添加书签"开始添加</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- 添加/编辑书签对话框 -->
+  <div id="bookmarkDialog" class="dialog" style="display: none;">
+    <div class="dialog-overlay"></div>
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <h2 id="dialogTitle">添加书签</h2>
+        <button class="dialog-close" id="closeDialog">✕</button>
+      </div>
+      <div class="dialog-body">
+        <div class="form-group">
+          <label for="bookmarkTitle">标题</label>
+          <input type="text" id="bookmarkTitle" placeholder="书签标题" />
+        </div>
+        <div class="form-group">
+          <label for="bookmarkUrl">URL</label>
+          <input type="url" id="bookmarkUrl" placeholder="https://..." />
+        </div>
+        <div class="form-group">
+          <label for="bookmarkCategory">分类</label>
+          <input type="text" id="bookmarkCategory" placeholder="分类（可选）" />
+        </div>
+        <div class="form-group">
+          <label for="bookmarkTags">标签</label>
+          <input type="text" id="bookmarkTags" placeholder="标签，用逗号分隔" />
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <button id="cancelDialog" class="btn-secondary">取消</button>
+        <button id="saveBookmark" class="btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通知 -->
+  <div id="notification" class="notification" style="display: none;">
+    <span id="notificationText"></span>
+  </div>
+
+  <script src="utils/storage.js"></script>
+  <script src="utils/bookmarks.js"></script>
+  <script src="utils/openai.js"></script>
+  <script src="scripts/manage.js"></script>
+</body>
+</html>
