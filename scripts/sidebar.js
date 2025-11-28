@@ -11,6 +11,9 @@ let classifyCancelled = false; // AI 分类取消标志
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('Sidebar loaded');
   
+  // 初始化图标
+  initIcons();
+  
   // 初始化服务
   await window.OpenAIService.initialize();
   
@@ -22,7 +25,51 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // 渲染书签
   renderBookmarks();
+  
+  // 监听 storage 变化，实时更新 OpenAI 配置
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local') {
+      if (changes.openaiKey) {
+        console.log('OpenAI Key changed, updating...');
+        window.OpenAIService.setApiKey(changes.openaiKey.newValue || '');
+      }
+      if (changes.openaiModel) {
+        console.log('OpenAI Model changed, updating...');
+        window.OpenAIService.setModel(changes.openaiModel.newValue || 'gpt-4o-mini');
+      }
+    }
+  });
 });
+
+// 初始化图标
+function initIcons() {
+  // 头部按钮图标
+  setIcon('manageIcon', 'list');
+  setIcon('refreshIcon', 'refresh');
+  setIcon('settingsIcon', 'settings');
+  
+  // 搜索栏图标
+  setIcon('searchIconEl', 'search');
+  setIcon('clearIcon', 'x');
+  
+  // 空状态图标
+  setIcon('emptyIcon', 'inbox');
+  
+  // 右键菜单图标
+  setIcon('menuOpenIcon', 'externalLink');
+  setIcon('menuNewTabIcon', 'externalLink');
+  setIcon('menuEditIcon', 'edit');
+  setIcon('menuClassifyIcon', 'sparkles');
+  setIcon('menuDeleteIcon', 'trash');
+}
+
+// 安全设置图标
+function setIcon(elementId, iconName) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.innerHTML = window.Icons.get(iconName);
+  }
+}
 
 // 加载数据
 async function loadData() {
@@ -37,12 +84,6 @@ async function loadData() {
     bookmarkMetadata = await window.StorageManager.getBookmarkData();
     categories = await window.StorageManager.getCategories();
     tags = await window.StorageManager.getTags();
-    
-    // 更新筛选器
-    updateFilters();
-    
-    // 更新统计
-    updateStatistics();
     
   } catch (error) {
     console.error('Error loading data:', error);
@@ -80,7 +121,7 @@ function bindEvents() {
     
     searchTimeout = setTimeout(() => {
       if (query) {
-        handleSearch(query, aiSearchToggle.checked);
+        handleSearch(query, aiSearchToggle ? aiSearchToggle.checked : false);
       } else {
         filteredBookmarks = [...bookmarks];
         renderBookmarks();
@@ -95,50 +136,27 @@ function bindEvents() {
     renderBookmarks();
   });
   
-  // 分类筛选
-  document.getElementById('categoryFilter').addEventListener('change', (e) => {
-    applyFilters();
-  });
-  
-  // 标签筛选
-  document.getElementById('tagFilter').addEventListener('change', (e) => {
-    applyFilters();
-  });
-  
-  // 清除筛选
-  document.getElementById('clearFiltersBtn').addEventListener('click', () => {
-    document.getElementById('categoryFilter').value = '';
-    document.getElementById('tagFilter').value = '';
-    searchInput.value = '';
-    clearSearchBtn.style.display = 'none';
-    filteredBookmarks = [...bookmarks];
-    renderBookmarks();
-  });
-  
-  // 保存当前页面
-  document.getElementById('saveCurrentBtn').addEventListener('click', async () => {
-    await chrome.runtime.sendMessage({ type: 'SAVE_CURRENT_PAGE' });
-  });
-  
-  // AI 分类
-  document.getElementById('classifyAllBtn').addEventListener('click', async () => {
-    await classifyAllBookmarks();
-  });
   
   // 管理页面
-  document.getElementById('manageBtn').addEventListener('click', () => {
-    chrome.tabs.create({ url: 'manage.html' });
-  });
+  const manageBtn = document.getElementById('manageBtn');
+  if (manageBtn) {
+    manageBtn.addEventListener('click', async () => {
+      // 检查是否已经打开了管理页面
+      const tabs = await chrome.tabs.query({ url: chrome.runtime.getURL('manage.html') });
+      if (tabs.length > 0) {
+        // 如果已经打开，切换到该标签页
+        chrome.tabs.update(tabs[0].id, { active: true });
+        chrome.windows.update(tabs[0].windowId, { focused: true });
+      } else {
+        // 否则创建新标签页
+        chrome.tabs.create({ url: 'manage.html' });
+      }
+    });
+  }
   
   // 添加第一个书签
   document.getElementById('addFirstBookmarkBtn')?.addEventListener('click', async () => {
     await chrome.runtime.sendMessage({ type: 'SAVE_CURRENT_PAGE' });
-  });
-  
-  // 终止 AI 分类
-  document.getElementById('cancelClassify').addEventListener('click', () => {
-    classifyCancelled = true;
-    showNotification('已取消', 'AI 分类已终止', 'warning');
   });
   
   // 隐藏右键菜单
@@ -156,19 +174,26 @@ function bindEvents() {
 
 // 搜索处理
 async function handleSearch(query, useAI) {
-  if (useAI && window.OpenAIService.isConfigured()) {
-    showLoading(true);
-    try {
-      filteredBookmarks = await window.OpenAIService.semanticSearch(query, bookmarks);
-      renderBookmarks();
-      showNotification('AI 搜索完成', `找到 ${filteredBookmarks.length} 个相关书签`, 'success');
-    } catch (error) {
-      console.error('AI search error:', error);
-      showNotification('AI 搜索失败', error.message, 'error');
-      // 降级到普通搜索
+  if (useAI) {
+    // 重新初始化 OpenAI 配置
+    await window.OpenAIService.initialize();
+    
+    if (window.OpenAIService.isConfigured()) {
+      showLoading(true);
+      try {
+        filteredBookmarks = await window.OpenAIService.semanticSearch(query, bookmarks);
+        renderBookmarks();
+        showNotification('AI 搜索完成', `找到 ${filteredBookmarks.length} 个相关书签`, 'success');
+      } catch (error) {
+        console.error('AI search error:', error);
+        showNotification('AI 搜索失败', error.message, 'error');
+        // 降级到普通搜索
+        normalSearch(query);
+      } finally {
+        showLoading(false);
+      }
+    } else {
       normalSearch(query);
-    } finally {
-      showLoading(false);
     }
   } else {
     normalSearch(query);
@@ -195,73 +220,6 @@ function normalSearch(query) {
   renderBookmarks();
 }
 
-// 应用筛选
-function applyFilters() {
-  const categoryFilter = document.getElementById('categoryFilter').value;
-  const tagFilter = document.getElementById('tagFilter').value;
-  
-  filteredBookmarks = bookmarks.filter(bookmark => {
-    const metadata = bookmarkMetadata[bookmark.id];
-    
-    if (categoryFilter && metadata?.category !== categoryFilter) {
-      return false;
-    }
-    
-    if (tagFilter && !metadata?.tags?.includes(tagFilter)) {
-      return false;
-    }
-    
-    return true;
-  });
-  
-  renderBookmarks();
-}
-
-// 更新筛选器选项
-function updateFilters() {
-  const categoryFilter = document.getElementById('categoryFilter');
-  const tagFilter = document.getElementById('tagFilter');
-  
-  // 从书签中提取所有分类（包括文件夹名和 AI 分类）
-  const allCategories = new Set();
-  const allTags = new Set();
-  
-  bookmarks.forEach(bookmark => {
-    // 添加文件夹名称
-    if (bookmark.folderName) {
-      allCategories.add(bookmark.folderName);
-    }
-    
-    // 添加 AI 分类
-    const metadata = bookmarkMetadata[bookmark.id];
-    if (metadata?.category) {
-      allCategories.add(metadata.category);
-    }
-    
-    // 添加标签
-    if (metadata?.tags && Array.isArray(metadata.tags)) {
-      metadata.tags.forEach(tag => allTags.add(tag));
-    }
-  });
-  
-  // 更新分类下拉框
-  categoryFilter.innerHTML = '<option value="">全部分类</option>';
-  Array.from(allCategories).sort().forEach(category => {
-    const option = document.createElement('option');
-    option.value = category;
-    option.textContent = category;
-    categoryFilter.appendChild(option);
-  });
-  
-  // 更新标签下拉框
-  tagFilter.innerHTML = '<option value="">全部标签</option>';
-  Array.from(allTags).sort().forEach(tag => {
-    const option = document.createElement('option');
-    option.value = tag;
-    option.textContent = tag;
-    tagFilter.appendChild(option);
-  });
-}
 
 // 渲染书签
 function renderBookmarks() {
@@ -280,7 +238,11 @@ function renderBookmarks() {
   // 按分类分组
   const grouped = groupByCategory(filteredBookmarks);
   
-  for (const [category, items] of Object.entries(grouped)) {
+  // 按分类名称排序
+  const sortedCategories = Object.keys(grouped).sort();
+  
+  sortedCategories.forEach(category => {
+    const items = grouped[category];
     // 创建分类文件夹
     const folder = createFolderElement(category, items.length);
     container.appendChild(folder);
@@ -299,10 +261,16 @@ function renderBookmarks() {
     // 绑定折叠事件
     folder.addEventListener('click', () => {
       const toggle = folder.querySelector('.folder-toggle');
-      toggle.classList.toggle('expanded');
-      children.classList.toggle('expanded');
+      const isExpanded = children.classList.toggle('expanded');
+      
+      // 切换图标
+      if (isExpanded) {
+        toggle.innerHTML = window.Icons.get('chevronDown');
+      } else {
+        toggle.innerHTML = window.Icons.get('chevronRight');
+      }
     });
-  }
+  });
 }
 
 // 按分类分组（优先使用用户的书签文件夹，其次使用 AI 分类）
@@ -321,6 +289,13 @@ function groupByCategory(bookmarks) {
     grouped[category].push(bookmark);
   });
   
+  // 对每个分类内的书签按标题排序
+  Object.keys(grouped).forEach(category => {
+    grouped[category].sort((a, b) => {
+      return (a.title || a.url).localeCompare(b.title || b.url);
+    });
+  });
+  
   return grouped;
 }
 
@@ -329,13 +304,21 @@ function createFolderElement(title, count) {
   const folder = document.createElement('div');
   folder.className = 'folder-item';
   
-  folder.innerHTML = `
-    <span class="folder-toggle">▶</span>
-    <span class="item-icon">📁</span>
-    <div class="item-content">
-      <div class="item-title">${escapeHtml(title)} (${count})</div>
-    </div>
-  `;
+  const toggleIcon = document.createElement('span');
+  toggleIcon.className = 'folder-toggle icon';
+  toggleIcon.innerHTML = window.Icons.get('chevronRight');
+  
+  const folderIcon = document.createElement('span');
+  folderIcon.className = 'item-icon icon';
+  folderIcon.innerHTML = window.Icons.get('folder');
+  
+  const content = document.createElement('div');
+  content.className = 'item-content';
+  content.innerHTML = `<div class="item-title">${escapeHtml(title)} (${count})</div>`;
+  
+  folder.appendChild(toggleIcon);
+  folder.appendChild(folderIcon);
+  folder.appendChild(content);
   
   return folder;
 }
@@ -349,18 +332,38 @@ function createBookmarkElement(bookmark) {
   const metadata = bookmarkMetadata[bookmark.id];
   const tags = metadata?.tags || [];
   
-  const tagsHtml = tags.length > 0 
-    ? `<div class="item-tags">${tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}</div>`
-    : '';
+  const bookmarkIcon = document.createElement('span');
+  bookmarkIcon.className = 'item-icon icon';
+  bookmarkIcon.innerHTML = window.Icons.get('bookmark');
   
-  item.innerHTML = `
-    <span class="item-icon">🔖</span>
-    <div class="item-content">
-      <div class="item-title">${escapeHtml(bookmark.title || bookmark.url)}</div>
-      <div class="item-url">${escapeHtml(bookmark.url)}</div>
-      ${tagsHtml}
-    </div>
-  `;
+  const content = document.createElement('div');
+  content.className = 'item-content';
+  
+  const title = document.createElement('div');
+  title.className = 'item-title';
+  title.textContent = bookmark.title || bookmark.url;
+  
+  const url = document.createElement('div');
+  url.className = 'item-url';
+  url.textContent = bookmark.url;
+  
+  content.appendChild(title);
+  content.appendChild(url);
+  
+  if (tags.length > 0) {
+    const tagsDiv = document.createElement('div');
+    tagsDiv.className = 'item-tags';
+    tags.forEach(tag => {
+      const tagSpan = document.createElement('span');
+      tagSpan.className = 'tag';
+      tagSpan.textContent = tag;
+      tagsDiv.appendChild(tagSpan);
+    });
+    content.appendChild(tagsDiv);
+  }
+  
+  item.appendChild(bookmarkIcon);
+  item.appendChild(content);
   
   // 点击打开
   item.addEventListener('click', (e) => {
@@ -443,9 +446,13 @@ async function handleContextMenuAction(action, bookmark) {
 
 // AI 分类单个书签
 async function classifyBookmark(bookmark) {
+  // 重新初始化 OpenAI 配置，确保获取最新的 API Key
+  await window.OpenAIService.initialize();
+  
   if (!window.OpenAIService.isConfigured()) {
-    showNotification('未配置', '请先配置 OpenAI API Key', 'warning');
-    chrome.runtime.openOptionsPage();
+    if (confirm('AI 功能需要配置 OpenAI API Key 才能使用。\n\n是否立即前往设置页面进行配置？')) {
+      chrome.runtime.openOptionsPage();
+    }
     return;
   }
   
@@ -471,98 +478,6 @@ async function classifyBookmark(bookmark) {
   } finally {
     showLoading(false);
   }
-}
-
-// AI 分类所有书签
-async function classifyAllBookmarks() {
-  if (!window.OpenAIService.isConfigured()) {
-    showNotification('未配置', '请先配置 OpenAI API Key', 'warning');
-    chrome.runtime.openOptionsPage();
-    return;
-  }
-  
-  if (!confirm(`确定要对 ${bookmarks.length} 个书签进行 AI 分类吗？\n这可能需要一些时间并消耗 API 额度。`)) {
-    return;
-  }
-  
-  classifyCancelled = false; // 重置取消标志
-  const progressBar = document.getElementById('progressBar');
-  const progressText = document.getElementById('progressText');
-  const progressPercent = document.getElementById('progressPercent');
-  const progressFill = document.getElementById('progressFill');
-  
-  progressBar.style.display = 'block';
-  
-  try {
-    let processedCount = 0;
-    
-    // 逐个处理书签，以便支持取消
-    for (let i = 0; i < bookmarks.length; i++) {
-      if (classifyCancelled) {
-        showNotification('已取消', `已处理 ${processedCount} 个书签`, 'warning');
-        break;
-      }
-      
-      const bookmark = bookmarks[i];
-      const percent = Math.round(((i + 1) / bookmarks.length) * 100);
-      progressText.textContent = `正在分类... (${i + 1}/${bookmarks.length})`;
-      progressPercent.textContent = `${percent}%`;
-      progressFill.style.width = `${percent}%`;
-      
-      try {
-        const classification = await window.OpenAIService.classifyBookmark(bookmark);
-        await window.StorageManager.updateBookmarkMetadata(bookmark.id, classification);
-        processedCount++;
-      } catch (error) {
-        console.error(`Failed to classify bookmark ${bookmark.id}:`, error);
-      }
-    }
-    
-    if (!classifyCancelled) {
-      // 更新分类和标签列表
-      await updateCategoriesAndTags();
-      
-      // 重新加载
-      await loadData();
-      renderBookmarks();
-      
-      showNotification('分类完成', `已完成 ${processedCount} 个书签的分类`, 'success');
-    }
-  } catch (error) {
-    console.error('Classify all error:', error);
-    showNotification('分类失败', error.message, 'error');
-  } finally {
-    progressBar.style.display = 'none';
-  }
-}
-
-// 更新分类和标签列表
-async function updateCategoriesAndTags() {
-  const allCategories = new Set();
-  const allTags = new Set();
-  
-  for (const metadata of Object.values(bookmarkMetadata)) {
-    if (metadata.category) {
-      allCategories.add(metadata.category);
-    }
-    if (metadata.tags) {
-      metadata.tags.forEach(tag => allTags.add(tag));
-    }
-  }
-  
-  categories = Array.from(allCategories).sort();
-  tags = Array.from(allTags).sort();
-  
-  await window.StorageManager.setCategories(categories);
-  await window.StorageManager.setTags(tags);
-}
-
-// 更新统计信息
-function updateStatistics() {
-  document.getElementById('totalBookmarks').textContent = bookmarks.length;
-  
-  const classified = bookmarks.filter(b => bookmarkMetadata[b.id]?.category).length;
-  document.getElementById('classifiedBookmarks').textContent = classified;
 }
 
 // 显示/隐藏加载指示器

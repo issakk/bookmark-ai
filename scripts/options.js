@@ -2,6 +2,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('Options page loaded');
   
+  // 初始化图标
+  initIcons();
+  
   // 加载设置
   await loadSettings();
   
@@ -12,21 +15,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindEvents();
 });
 
+// 初始化图标
+function initIcons() {
+  document.getElementById('eyeIcon').innerHTML = window.Icons.get('eye');
+  document.getElementById('saveSettingsIcon').innerHTML = window.Icons.get('save');
+  document.getElementById('resetIcon').innerHTML = window.Icons.get('refresh');
+}
+
 // 加载设置
 async function loadSettings() {
   try {
     const apiKey = await window.StorageManager.getOpenAIKey();
     const model = await window.StorageManager.getOpenAIModel();
-    const theme = await window.StorageManager.getTheme();
     const autoClassify = await window.StorageManager.getAutoClassify();
+    
+    // 从 chrome.storage.sync 读取语言
+    const syncData = await chrome.storage.sync.get(['language']);
+    const language = syncData.language || 'auto';
     
     document.getElementById('apiKey').value = apiKey;
     document.getElementById('model').value = model;
-    document.getElementById('theme').value = theme;
+    document.getElementById('language').value = language;
     document.getElementById('autoClassify').checked = autoClassify;
   } catch (error) {
     console.error('Error loading settings:', error);
-    showNotification('加载设置失败', 'error');
+    showNotification(await window.I18n.t('options.notification.loadFailed'), 'error');
   }
 }
 
@@ -52,9 +65,22 @@ async function loadStatistics() {
 // 绑定事件
 function bindEvents() {
   // 显示/隐藏 API Key
-  document.getElementById('toggleApiKey').addEventListener('click', () => {
+  const toggleApiKeyBtn = document.getElementById('toggleApiKey');
+  toggleApiKeyBtn.addEventListener('click', () => {
     const input = document.getElementById('apiKey');
-    input.type = input.type === 'password' ? 'text' : 'password';
+    const icon = document.getElementById('eyeIcon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.innerHTML = window.Icons.get('eyeOff');
+    } else {
+      input.type = 'password';
+      icon.innerHTML = window.Icons.get('eye');
+    }
+  });
+  
+  // 语言切换实时预览
+  document.getElementById('language').addEventListener('change', async (e) => {
+    await window.I18n.setLocale(e.target.value);
   });
   
   // 测试连接
@@ -69,9 +95,9 @@ function bindEvents() {
   
   // 重置设置
   document.getElementById('resetSettings').addEventListener('click', async () => {
-    if (confirm('确定要重置所有设置吗？')) {
+    if (confirm(await window.I18n.t('options.notification.resetConfirm'))) {
       await loadSettings();
-      showNotification('设置已重置', 'success');
+      showNotification(await window.I18n.t('options.notification.resetSuccess'), 'success');
     }
   });
   
@@ -100,7 +126,7 @@ function bindEvents() {
   
   // 清除数据
   document.getElementById('clearData').addEventListener('click', async () => {
-    if (confirm('确定要清除所有分类和标签数据吗？\n这不会删除书签本身。')) {
+    if (confirm(await window.I18n.t('options.notification.clearConfirm'))) {
       await clearData();
     }
   });
@@ -115,12 +141,12 @@ async function testOpenAIConnection() {
   const resultSpan = document.getElementById('testResult');
   
   if (!apiKey) {
-    resultSpan.textContent = '❌ 请输入 API Key';
+    resultSpan.textContent = await window.I18n.t('options.test.enterApiKey');
     resultSpan.className = 'test-result error';
     return;
   }
   
-  resultSpan.textContent = '⏳ 测试中...';
+  resultSpan.textContent = await window.I18n.t('options.test.testing');
   resultSpan.className = 'test-result';
   
   try {
@@ -131,14 +157,17 @@ async function testOpenAIConnection() {
       { role: 'user', content: 'Hello' }
     ], { max_tokens: 10 });
     
-    resultSpan.textContent = '✅ 连接成功';
+    resultSpan.textContent = await window.I18n.t('options.test.success');
     resultSpan.className = 'test-result success';
-    showNotification('连接成功', 'success');
+    
+    // 测试成功后自动保存配置
+    await saveSettings();
+    showNotification(await window.I18n.t('options.test.successSaved'), 'success');
   } catch (error) {
     console.error('Test connection error:', error);
-    resultSpan.textContent = '❌ 连接失败';
+    resultSpan.textContent = await window.I18n.t('options.test.failed');
     resultSpan.className = 'test-result error';
-    showNotification(`连接失败: ${error.message}`, 'error');
+    showNotification(await window.I18n.t('options.test.failedMessage', '', { error: error.message }), 'error');
   }
 }
 
@@ -147,21 +176,26 @@ async function saveSettings() {
   try {
     const apiKey = document.getElementById('apiKey').value.trim();
     const model = document.getElementById('model').value;
-    const theme = document.getElementById('theme').value;
+    const language = document.getElementById('language').value;
     const autoClassify = document.getElementById('autoClassify').checked;
     
     await window.StorageManager.setOpenAIKey(apiKey);
     await window.StorageManager.setOpenAIModel(model);
-    await window.StorageManager.setTheme(theme);
     await window.StorageManager.setAutoClassify(autoClassify);
+    
+    // 保存语言到 sync storage
+    await chrome.storage.sync.set({ language });
+    
+    // 应用语言
+    await window.I18n.setLocale(language);
     
     // 重新初始化 OpenAI 服务
     await window.OpenAIService.initialize();
     
-    showNotification('设置已保存', 'success');
+    showNotification(await window.I18n.t('options.save.success'), 'success');
   } catch (error) {
     console.error('Error saving settings:', error);
-    showNotification('保存失败', 'error');
+    showNotification(await window.I18n.t('options.save.error'), 'error');
   }
 }
 
@@ -185,10 +219,10 @@ async function exportData() {
     a.click();
     
     URL.revokeObjectURL(url);
-    showNotification('数据已导出', 'success');
+    showNotification(await window.I18n.t('options.data.exported'), 'success');
   } catch (error) {
     console.error('Error exporting data:', error);
-    showNotification('导出失败', 'error');
+    showNotification(await window.I18n.t('options.data.exportFailed'), 'error');
   }
 }
 
@@ -200,7 +234,7 @@ async function importData(file) {
     
     // 验证数据格式
     if (typeof data !== 'object') {
-      throw new Error('无效的数据格式');
+      throw new Error(await window.I18n.t('options.data.invalidFormat'));
     }
     
     // 导入数据（保留现有的 API Key）
@@ -216,10 +250,10 @@ async function importData(file) {
     await loadSettings();
     await loadStatistics();
     
-    showNotification('数据已导入', 'success');
+    showNotification(await window.I18n.t('options.data.imported'), 'success');
   } catch (error) {
     console.error('Error importing data:', error);
-    showNotification(`导入失败: ${error.message}`, 'error');
+    showNotification(await window.I18n.t('options.data.importFailed', '', { error: error.message }), 'error');
   }
 }
 
@@ -236,10 +270,10 @@ async function exportBookmarks() {
     a.click();
     
     URL.revokeObjectURL(url);
-    showNotification('书签已导出', 'success');
+    showNotification(await window.I18n.t('options.data.bookmarksExported'), 'success');
   } catch (error) {
     console.error('Error exporting bookmarks:', error);
-    showNotification('导出失败', 'error');
+    showNotification(await window.I18n.t('options.data.exportFailed'), 'error');
   }
 }
 
@@ -253,10 +287,10 @@ async function clearData() {
     });
     
     await loadStatistics();
-    showNotification('数据已清除', 'success');
+    showNotification(await window.I18n.t('options.notification.clearSuccess'), 'success');
   } catch (error) {
     console.error('Error clearing data:', error);
-    showNotification('清除失败', 'error');
+    showNotification(await window.I18n.t('options.notification.clearFailed'), 'error');
   }
 }
 

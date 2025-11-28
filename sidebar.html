@@ -1,141 +1,119 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Bookmark Manager</title>
-  <link rel="stylesheet" href="styles/sidebar.css">
-</head>
-<body>
-  <div id="app" class="sidebar-container">
-    <!-- 头部 -->
-    <header class="sidebar-header">
-      <h1 class="sidebar-title">📚 AI 书签管理</h1>
-      <div class="header-actions">
-        <button id="refreshBtn" class="icon-btn" title="刷新书签">
-          <span>🔄</span>
-        </button>
-        <button id="settingsBtn" class="icon-btn" title="设置">
-          <span>⚙️</span>
-        </button>
-      </div>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Bookmark Manager</title>
+    <link rel="stylesheet" href="styles/theme.css" />
+    <link rel="stylesheet" href="styles/sidebar.css" />
+  </head>
+  <body>
+    <div id="app" class="sidebar-container">
+      <!-- 头部操作栏 -->
+      <header class="sidebar-header">
+        <div class="header-actions">
+          <div class="header-actions-left">
+            <button
+              id="manageBtn"
+              class="icon-btn"
+              data-i18n-title="manage.title"
+              title="书签管理"
+            >
+              <span class="icon" id="manageIcon"></span>
+            </button>
 
-    <!-- 搜索栏 -->
-    <div class="search-container">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input 
-          type="text" 
-          id="searchInput" 
-          placeholder="搜索书签... (支持 AI 语义搜索)"
-          autocomplete="off"
-        />
-        <button id="clearSearchBtn" class="clear-btn" style="display: none;">✕</button>
-      </div>
-      <div class="search-options">
-        <label class="checkbox-label">
-          <input type="checkbox" id="aiSearchToggle" />
-          <span>AI 搜索</span>
-        </label>
-      </div>
-    </div>
+            <button
+              id="refreshBtn"
+              class="icon-btn"
+              data-i18n-title="common.refresh"
+              title="刷新"
+            >
+              <span class="icon" id="refreshIcon"></span>
+            </button>
+          </div>
+          <button
+            id="settingsBtn"
+            class="icon-btn"
+            data-i18n-title="common.settings"
+            title="设置"
+          >
+            <span class="icon" id="settingsIcon"></span>
+          </button>
+        </div>
+      </header>
 
-    <!-- 筛选器 -->
-    <div class="filter-container">
-      <div class="filter-group">
-        <label for="categoryFilter">分类:</label>
-        <select id="categoryFilter">
-          <option value="">全部</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="tagFilter">标签:</label>
-        <select id="tagFilter">
-          <option value="">全部</option>
-        </select>
-      </div>
-      <button id="clearFiltersBtn" class="btn-secondary btn-sm">清除筛选</button>
-    </div>
-
-    <!-- 操作按钮 -->
-    <div class="action-bar">
-      <button id="saveCurrentBtn" class="btn-primary">
-        <span>💾</span> 保存当前页面
-      </button>
-      <button id="classifyAllBtn" class="btn-secondary">
-        <span>🤖</span> AI 分类
-      </button>
-      <button id="manageBtn" class="btn-secondary">
-        <span>📝</span> 管理页面
-      </button>
-    </div>
-
-    <!-- 统计信息 -->
-    <div class="stats-container" id="statsContainer">
-      <div class="stat-item">
-        <span class="stat-label">书签总数</span>
-        <span class="stat-value" id="totalBookmarks">0</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">已分类</span>
-        <span class="stat-value" id="classifiedBookmarks">0</span>
-      </div>
-    </div>
-
-    <!-- 书签树 -->
-    <div class="bookmarks-container">
-      <div id="loadingIndicator" class="loading-indicator" style="display: none;">
-        <div class="spinner"></div>
-        <p>加载中...</p>
-      </div>
-      
-      <div id="emptyState" class="empty-state" style="display: none;">
-        <span class="empty-icon">📭</span>
-        <p>暂无书签</p>
-        <button id="addFirstBookmarkBtn" class="btn-primary">添加第一个书签</button>
+      <!-- 搜索栏 -->
+      <div class="search-container">
+        <div class="search-box">
+          <span class="icon search-icon" id="searchIconEl"></span>
+          <input
+            type="text"
+            id="searchInput"
+            data-i18n-placeholder="sidebar.search.placeholder"
+            placeholder="搜索书签..."
+            autocomplete="off"
+          />
+          <button id="clearSearchBtn" class="clear-btn" style="display: none">
+            <span class="icon" id="clearIcon"></span>
+          </button>
+        </div>
       </div>
 
-      <div id="bookmarkTree" class="bookmark-tree"></div>
-    </div>
+      <!-- 书签树 -->
+      <div class="bookmarks-container">
+        <div
+          id="loadingIndicator"
+          class="loading-indicator"
+          style="display: none"
+        >
+          <div class="spinner"></div>
+          <p>加载中...</p>
+        </div>
 
-    <!-- 进度条（用于 AI 分类） -->
-    <div id="progressBar" class="progress-bar" style="display: none;">
-      <div class="progress-info">
-        <span id="progressText">处理中...</span>
-        <span id="progressPercent">0%</span>
+        <div id="emptyState" class="empty-state" style="display: none">
+          <span class="empty-icon icon" id="emptyIcon"></span>
+          <p>暂无书签</p>
+          <button id="addFirstBookmarkBtn" class="btn-primary">
+            添加第一个书签
+          </button>
+        </div>
+
+        <div id="bookmarkTree" class="bookmark-tree"></div>
       </div>
-      <div class="progress-track">
-        <div id="progressFill" class="progress-fill"></div>
+    </div>
+
+    <!-- 右键菜单 -->
+    <div id="contextMenu" class="context-menu" style="display: none">
+      <div class="context-menu-item" data-action="open">
+        <span class="icon" id="menuOpenIcon"></span>
+        <span data-i18n="sidebar.bookmark.open">打开</span>
       </div>
-      <button id="cancelClassify" class="btn-cancel">终止</button>
+      <div class="context-menu-item" data-action="open-new-tab">
+        <span class="icon" id="menuNewTabIcon"></span>
+        <span>新标签页打开</span>
+      </div>
+      <div class="context-menu-divider"></div>
+      <div class="context-menu-item" data-action="edit">
+        <span class="icon" id="menuEditIcon"></span>
+        <span data-i18n="sidebar.bookmark.edit">编辑</span>
+      </div>
+      <div class="context-menu-item" data-action="classify">
+        <span class="icon" id="menuClassifyIcon"></span>
+        <span>AI 分类</span>
+      </div>
+      <div class="context-menu-divider"></div>
+      <div class="context-menu-item" data-action="delete">
+        <span class="icon" id="menuDeleteIcon"></span>
+        <span data-i18n="sidebar.bookmark.delete">删除</span>
+      </div>
     </div>
-  </div>
 
-  <!-- 右键菜单 -->
-  <div id="contextMenu" class="context-menu" style="display: none;">
-    <div class="context-menu-item" data-action="open">
-      <span>🔗</span> 打开
-    </div>
-    <div class="context-menu-item" data-action="open-new-tab">
-      <span>🗗</span> 新标签页打开
-    </div>
-    <div class="context-menu-divider"></div>
-    <div class="context-menu-item" data-action="edit">
-      <span>✏️</span> 编辑
-    </div>
-    <div class="context-menu-item" data-action="classify">
-      <span>🤖</span> AI 分类
-    </div>
-    <div class="context-menu-divider"></div>
-    <div class="context-menu-item" data-action="delete">
-      <span>🗑️</span> 删除
-    </div>
-  </div>
-
-  <script src="utils/storage.js"></script>
-  <script src="utils/bookmarks.js"></script>
-  <script src="utils/openai.js"></script>
-  <script src="scripts/sidebar.js"></script>
-</body>
+    <script src="utils/icons.js"></script>
+    <script src="utils/i18n.js"></script>
+    <script src="utils/theme.js"></script>
+    <script src="utils/storage.js"></script>
+    <script src="utils/bookmarks.js"></script>
+    <script src="utils/openai.js"></script>
+    <script src="scripts/sidebar.js"></script>
+  </body>
 </html>

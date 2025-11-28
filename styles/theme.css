@@ -1,0 +1,169 @@
+/* 主题系统 - 固定深色主题 */
+
+/* 深色主题（默认且唯一） */
+:root,
+[data-theme="dark"],
+.theme-dark,
+body {
+  --primary: #60a5fa;
+  --primary-hover: #3b82f6;
+  --primary-light: #1e3a5f;
+  --danger: #f87171;
+  --danger-hover: #ef4444;
+  --success: #34d399;
+  --warning: #fbbf24;
+  
+  --bg: #111827;
+  --bg-secondary: #0f131a;
+  --bg-hover: #374151;
+  --bg-elevated: #1f2937;
+  
+  --text: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  
+  --border: #374151;
+  --border-hover: #4b5563;
+  
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  
+  --overlay: rgba(0, 0, 0, 0.7);
+}
+
+/* 图标颜色 - 确保白色 */
+.icon svg,
+.icon {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  fill: none !important;
+}
+
+/* 按钮中的图标 */
+button .icon svg {
+  stroke: currentColor;
+}
+
+/* 主要按钮的图标 */
+.btn-primary .icon svg {
+  stroke: #ffffff;
+}
+
+/* 次要按钮的图标 */
+.btn-secondary .icon svg {
+  stroke: var(--text);
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+/* 选择文本 */
+::selection {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* 输入框 */
+input,
+textarea,
+select {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary);
+  background: var(--bg);
+}
+
+/* 深色模式下的按钮 */
+[data-theme="dark"] .btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+}
+
+/* 深色模式下的卡片 */
+[data-theme="dark"] .bookmark-card,
+[data-theme="dark"] .tree-item {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .bookmark-card:hover,
+[data-theme="dark"] .tree-item:hover {
+  border-color: var(--primary);
+  background: var(--bg-hover);
+}
+
+/* 深色模式下的对话框 */
+[data-theme="dark"] .dialog-content {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-lg);
+}
+
+[data-theme="dark"] .dialog-overlay {
+  background: var(--overlay);
+}
+
+/* 深色模式下的通知 */
+[data-theme="dark"] .notification {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 深色模式下的侧边栏 */
+[data-theme="dark"] .sidebar {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+}
+
+/* 深色模式下的工具栏 */
+[data-theme="dark"] .toolbar {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+}
+
+/* 深色模式下的空状态 */
+[data-theme="dark"] .empty-state {
+  color: var(--text-secondary);
+}
+
+/* 图标颜色适配 */
+[data-theme="dark"] .icon svg {
+  stroke: currentColor;
+}
+
+/* 链接颜色 */
+[data-theme="dark"] a {
+  color: var(--primary);
+}
+
+[data-theme="dark"] a:hover {
+  color: var(--primary-hover);
+}

@@ -52,26 +52,29 @@ body {
   overflow: hidden;
 }
 
-/* 头部 */
+/* 头部 - 紧凑布局 */
 .sidebar-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-lg);
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
+  justify-content: flex-start;
+  padding: 8px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-}
-
-.sidebar-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
 }
 
 .header-actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 4px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-actions-left {
+  display: flex;
+  gap: 4px;
+  align-items: center;
 }
 
 /* 按钮样式 */
@@ -87,6 +90,16 @@ body {
   cursor: pointer;
   transition: background 0.2s;
   font-size: 16px;
+  color: var(--text);
+}
+
+.icon-btn .icon {
+  color: var(--text);
+}
+
+.icon-btn .icon svg {
+  stroke: var(--text);
+  fill: none;
 }
 
 .icon-btn:hover {

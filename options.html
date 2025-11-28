@@ -3,52 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Bookmark Manager - 设置</title>
+  <title data-i18n="options.pageTitle">AI Bookmark Manager - 设置</title>
+  <link rel="stylesheet" href="styles/theme.css">
   <link rel="stylesheet" href="styles/options.css">
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <h1>⚙️ 设置</h1>
-      <p class="subtitle">配置 AI 书签管理器</p>
+      <h1 data-i18n="options.pageTitle">设置</h1>
+      <p class="subtitle" data-i18n="options.subtitle">配置 AI 书签管理器</p>
     </header>
 
     <main class="main-content">
       <!-- OpenAI 配置 -->
       <section class="section">
-        <h2 class="section-title">🤖 OpenAI 配置</h2>
+        <h2 class="section-title" data-i18n="options.openai.title">OpenAI 配置</h2>
         <div class="form-group">
-          <label for="apiKey">API Key</label>
+          <label for="apiKey" data-i18n="options.openai.apiKey">API Key</label>
           <div class="input-group">
             <input 
               type="password" 
               id="apiKey" 
+              data-i18n-placeholder="options.openai.apiKeyPlaceholder"
               placeholder="sk-..." 
               autocomplete="off"
             />
-            <button id="toggleApiKey" class="btn-icon" title="显示/隐藏">👁️</button>
+            <button id="toggleApiKey" class="btn-icon" data-i18n-title="options.openai.toggleVisibility" title="显示/隐藏">
+              <span class="icon" id="eyeIcon"></span>
+            </button>
           </div>
-          <p class="help-text">
+          <p class="help-text" data-i18n="options.openai.apiKeyHelp">
             在 <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a> 获取您的 API Key
           </p>
         </div>
 
         <div class="form-group">
-          <label for="model">模型</label>
+          <label for="model" data-i18n="options.openai.model">模型</label>
           <select id="model">
-            <option value="gpt-4o-mini">GPT-4o Mini (推荐)</option>
+            <option value="gpt-4o-mini">GPT-4o Mini (<span data-i18n="options.openai.modelRecommended">推荐</span>)</option>
             <option value="gpt-4o">GPT-4o</option>
             <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
             <option value="gpt-4-turbo">GPT-4 Turbo</option>
           </select>
-          <p class="help-text">
+          <p class="help-text" data-i18n="options.openai.modelHelp">
             推荐使用 GPT-4o Mini，性价比最高
           </p>
         </div>
 
         <div class="form-group">
-          <button id="testConnection" class="btn-secondary">
-            <span>🔌</span> 测试连接
+          <button id="testConnection" class="btn-secondary" data-i18n="options.openai.testConnection">
+            测试连接
           </button>
           <span id="testResult" class="test-result"></span>
         </div>
@@ -56,65 +60,70 @@
 
       <!-- 功能设置 -->
       <section class="section">
-        <h2 class="section-title">🎯 功能设置</h2>
+        <h2 class="section-title" data-i18n="options.features.title">功能设置</h2>
         
         <div class="form-group">
           <label class="checkbox-label">
             <input type="checkbox" id="autoClassify" />
-            <span>自动分类新书签</span>
+            <span data-i18n="options.features.autoClassify">自动分类新书签</span>
           </label>
-          <p class="help-text">
+          <p class="help-text" data-i18n="options.features.autoClassifyHelp">
             新添加的书签将自动使用 AI 进行分类
           </p>
         </div>
 
+      </section>
+
+      <!-- 语言设置 -->
+      <section class="section">
+        <h2 class="section-title" data-i18n="options.language.title">语言设置</h2>
         <div class="form-group">
-          <label for="theme">主题</label>
-          <select id="theme">
-            <option value="light">浅色</option>
-            <option value="dark">深色</option>
-            <option value="auto">跟随系统</option>
+          <label for="language" data-i18n="options.language.mode">语言</label>
+          <select id="language">
+            <option value="auto" data-i18n="options.language.auto">跟随系统</option>
+            <option value="zh-CN" data-i18n="options.language.zhCN">简体中文</option>
+            <option value="en-US" data-i18n="options.language.enUS">English</option>
           </select>
         </div>
       </section>
 
       <!-- 数据管理 -->
       <section class="section">
-        <h2 class="section-title">💾 数据管理</h2>
+        <h2 class="section-title" data-i18n="options.data.title">数据管理</h2>
         
         <div class="form-group">
           <button id="exportData" class="btn-secondary">
-            <span>📤</span> 导出数据
+            <span data-i18n="options.data.export">导出数据</span>
           </button>
-          <p class="help-text">
+          <p class="help-text" data-i18n="options.data.exportHelp">
             导出所有书签分类和标签数据为 JSON 文件
           </p>
         </div>
 
         <div class="form-group">
           <button id="importData" class="btn-secondary">
-            <span>📥</span> 导入数据
+            <span data-i18n="options.data.import">导入数据</span>
           </button>
           <input type="file" id="importFile" accept=".json" style="display: none;" />
-          <p class="help-text">
+          <p class="help-text" data-i18n="options.data.importHelp">
             从 JSON 文件导入书签分类和标签数据
           </p>
         </div>
 
         <div class="form-group">
           <button id="exportBookmarks" class="btn-secondary">
-            <span>📋</span> 导出书签 (HTML)
+            <span data-i18n="options.data.exportHtml">导出书签 (HTML)</span>
           </button>
-          <p class="help-text">
+          <p class="help-text" data-i18n="options.data.exportHtmlHelp">
             导出书签为标准 HTML 格式
           </p>
         </div>
 
         <div class="form-group">
           <button id="clearData" class="btn-danger">
-            <span>🗑️</span> 清除所有数据
+            <span data-i18n="options.data.clear">清除所有数据</span>
           </button>
-          <p class="help-text">
+          <p class="help-text" data-i18n="options.data.clearHelp">
             清除所有分类和标签数据（不会删除书签本身）
           </p>
         </div>
@@ -122,23 +131,23 @@
 
       <!-- 统计信息 -->
       <section class="section">
-        <h2 class="section-title">📊 统计信息</h2>
+        <h2 class="section-title" data-i18n="options.stats.title">统计信息</h2>
         
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-label">书签总数</div>
+            <div class="stat-label" data-i18n="options.stats.totalBookmarks">书签总数</div>
             <div class="stat-value" id="statTotalBookmarks">0</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">已分类</div>
+            <div class="stat-label" data-i18n="options.stats.classified">已分类</div>
             <div class="stat-value" id="statClassified">0</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">分类数量</div>
+            <div class="stat-label" data-i18n="options.stats.categories">分类数量</div>
             <div class="stat-value" id="statCategories">0</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">标签数量</div>
+            <div class="stat-label" data-i18n="options.stats.tags">标签数量</div>
             <div class="stat-value" id="statTags">0</div>
           </div>
         </div>
@@ -146,19 +155,21 @@
 
       <!-- 关于 -->
       <section class="section">
-        <h2 class="section-title">ℹ️ 关于</h2>
-        <div class="about-content">
-          <p><strong>AI Bookmark Manager</strong> v1.0.0</p>
-          <p>智能书签管理浏览器插件</p>
-          <p class="help-text">
+        <h2 class="section-title" data-i18n="options.about.title">关于</h2>
+          <div class="about-item">
+            <strong data-i18n="options.about.version">版本</strong>: 1.0.3
+          </div>
+          <div class="about-item">
+            <strong data-i18n="options.about.github">GitHub</strong>: <a href="https://github.com/simonguo/bookmark-ai" target="_blank">AI Bookmark Manager</a>
+          </div>
+          <p data-i18n="options.about.description">智能书签管理浏览器插件</p>
+          <p class="help-text" data-i18n="options.about.aiDescription">
             使用 AI 技术自动分类、整理和搜索您的书签
           </p>
           <div class="links">
-            <a href="https://github.com/simonguo/bookmark-ai" target="_blank">GitHub</a>
+            <a href="mailto:simonguo.2009@gmail.com" id="feedbackLink" data-i18n="options.about.feedback">反馈问题</a>
             <span>•</span>
-            <a href="mailto:simonguo.2009@gmail.com" id="reportIssue">反馈问题</a>
-            <span>•</span>
-            <a href="user-guide.html" target="_blank" id="viewDocs">使用文档</a>
+            <a href="user-guide.html" target="_blank" id="viewDocs" data-i18n="options.about.userGuide">使用文档</a>
           </div>
         </div>
       </section>
@@ -166,10 +177,12 @@
 
     <footer class="footer">
       <button id="saveSettings" class="btn-primary">
-        <span>💾</span> 保存设置
+        <span class="icon" id="saveSettingsIcon"></span>
+        <span data-i18n="options.save.button">保存设置</span>
       </button>
       <button id="resetSettings" class="btn-secondary">
-        <span>↺</span> 重置
+        <span class="icon" id="resetIcon"></span>
+        <span data-i18n="options.reset.button">重置设置</span>
       </button>
     </footer>
 
@@ -179,6 +192,9 @@
     </div>
   </div>
 
+  <script src="utils/icons.js"></script>
+  <script src="utils/i18n.js"></script>
+  <script src="utils/theme.js"></script>
   <script src="utils/storage.js"></script>
   <script src="utils/bookmarks.js"></script>
   <script src="utils/openai.js"></script>

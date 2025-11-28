@@ -1,0 +1,262 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "refresh": "Refresh",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info",
+    "settings": "Settings",
+    "all": "All"
+  },
+  "sidebar": {
+    "title": "AI Bookmark Manager",
+    "search": {
+      "placeholder": "Search bookmarks...",
+      "ai": "AI Search"
+    },
+    "filter": {
+      "category": "Category",
+      "tag": "Tag",
+      "all": "All",
+      "uncategorized": "Uncategorized"
+    },
+    "view": {
+      "byCategory": "By Category",
+      "byTag": "By Tag",
+      "byDate": "By Date"
+    },
+    "classify": {
+      "button": "Classify All Bookmarks",
+      "progress": "Classifying...",
+      "cancel": "Cancel",
+      "complete": "Complete"
+    },
+    "bookmark": {
+      "open": "Open",
+      "edit": "Edit",
+      "delete": "Delete",
+      "saveCurrentPage": "Save Current Page"
+    }
+  },
+  "manage": {
+    "pageTitle": "Bookmark Manager",
+    "views": {
+      "bookmarks": "Bookmarks",
+      "search": "Search",
+      "tools": "Tools",
+      "aiOrganize": "AI Organize"
+    },
+    "sidebar": {
+      "bookmarks": "Bookmarks",
+      "search": "Search",
+      "tools": "Tools",
+      "aiOrganize": "AI Organize"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search bookmarks...",
+      "clear": "Clear search"
+    },
+    "filter": {
+      "title": "Filter",
+      "allCategories": "All Categories",
+      "allTags": "All Tags",
+      "clear": "Clear Filters"
+    },
+    "view": {
+      "title": "View",
+      "tree": "Tree View",
+      "list": "List View"
+    },
+    "sort": {
+      "byTitle": "By Title",
+      "byDate": "By Date",
+      "byUrl": "By URL"
+    },
+    "actions": {
+      "add": "Add Bookmark",
+      "selectAll": "Select All",
+      "expandAll": "Expand All",
+      "collapseAll": "Collapse All"
+    },
+    "stats": {
+      "title": "Statistics",
+      "total": "Total",
+      "selected": "Selected"
+    },
+    "tools": {
+      "classifySelected": "Classify Selected",
+      "findDuplicates": "Find Duplicates",
+      "findInvalid": "Find Invalid",
+      "deleteSelected": "Delete Selected"
+    },
+    "aiOrganize": {
+      "description": "Use AI to automatically classify and organize all bookmarks, generating categories, tags, and descriptions for each bookmark.",
+      "start": "Start AI Organization",
+      "stop": "Stop Organization",
+      "progressTitle": "Organization Progress",
+      "preparing": "Preparing...",
+      "resultsTitle": "Live Results",
+      "success": "Success",
+      "failed": "Failed",
+      "skipped": "Skipped"
+    },
+    "editor": {
+      "allBookmarks": "All Bookmarks"
+    },
+    "results": {
+      "title": "Detection Results",
+      "duplicates": "Duplicate Bookmarks",
+      "invalid": "Invalid Bookmarks",
+      "delete": "Delete All"
+    },
+    "empty": {
+      "title": "No bookmarks found",
+      "subtitle": "Try adjusting filters",
+      "description": "Click add button to start adding bookmarks"
+    },
+    "dialog": {
+      "addBookmark": "Add Bookmark",
+      "editBookmark": "Edit Bookmark",
+      "title": "Title",
+      "titlePlaceholder": "Bookmark title",
+      "url": "URL",
+      "category": "Category",
+      "categoryPlaceholder": "Category (optional)",
+      "tags": "Tags",
+      "tagsPlaceholder": "Tags, separated by commas",
+      "enterUrl": "Please enter URL"
+    },
+    "notification": {
+      "refreshed": "Refreshed",
+      "deleted": "Deleted",
+      "bookmarkUpdated": "Bookmark updated",
+      "bookmarkAdded": "Bookmark added",
+      "saveFailed": "Save failed",
+      "selectFirst": "Please select bookmarks first",
+      "configureApiKey": "Please configure OpenAI API Key first",
+      "classifying": "Classifying...",
+      "classifyComplete": "Classification complete",
+      "classifyFailed": "Classification failed",
+      "deleteFailed": "Delete failed",
+      "organizing": "Organizing...",
+      "organizeCancelled": "Cancelled",
+      "organizeComplete": "Organization complete!",
+      "organizeFailed": "Organization failed"
+    },
+    "confirm": {
+      "delete": "Are you sure you want to delete bookmark \"{title}\"?",
+      "deleteMultiple": "Are you sure you want to delete {count} bookmarks?",
+      "classify": "Are you sure you want to classify {count} bookmarks with AI?",
+      "organize": "Are you sure you want to organize {count} bookmarks with AI?\nThis may take some time and consume API credits.",
+      "configureApiKey": "AI features require OpenAI API Key configuration.\n\nWould you like to go to settings page now?"
+    },
+    "title": {
+      "search": "Search: \"{query}\" ({count} results)",
+      "filter": "Filter: {filter} ({count} results)",
+      "allBookmarks": "All Bookmarks"
+    },
+    "ai": {
+      "success": "{count} succeeded",
+      "failed": "{count} failed",
+      "skipped": "{count} skipped"
+    }
+  },
+  "options": {
+    "pageTitle": "Settings",
+    "subtitle": "Configure AI Bookmark Manager",
+    "openai": {
+      "title": "OpenAI Configuration",
+      "apiKey": "API Key",
+      "apiKeyPlaceholder": "sk-...",
+      "apiKeyHelp": "Get your API Key from OpenAI Platform",
+      "toggleVisibility": "Show/Hide",
+      "model": "Model",
+      "modelRecommended": "Recommended",
+      "modelHelp": "GPT-4o Mini is recommended for best value",
+      "testConnection": "Test Connection"
+    },
+    "features": {
+      "title": "Feature Settings",
+      "autoClassify": "Auto-classify new bookmarks",
+      "autoClassifyHelp": "Newly added bookmarks will be automatically classified using AI"
+    },
+    "language": {
+      "title": "Language Settings",
+      "mode": "Language",
+      "auto": "Follow System",
+      "zhCN": "简体中文",
+      "enUS": "English"
+    },
+    "data": {
+      "title": "Data Management",
+      "export": "Export Data",
+      "exportHelp": "Export all bookmark categories and tag data as JSON",
+      "import": "Import Data",
+      "importHelp": "Import bookmark categories and tag data from JSON",
+      "exportHtml": "Export Bookmarks (HTML)",
+      "exportHtmlHelp": "Export bookmarks in standard HTML format",
+      "clear": "Clear All Data",
+      "clearHelp": "Clear all category and tag data (bookmarks themselves will not be deleted)",
+      "exported": "Data exported",
+      "exportFailed": "Export failed",
+      "imported": "Data imported",
+      "importFailed": "Import failed: {error}",
+      "invalidFormat": "Invalid data format",
+      "bookmarksExported": "Bookmarks exported"
+    },
+    "stats": {
+      "title": "Statistics",
+      "totalBookmarks": "Total Bookmarks",
+      "classified": "Classified",
+      "categories": "Categories",
+      "tags": "Tags"
+    },
+    "about": {
+      "title": "About",
+      "version": "Version",
+      "github": "GitHub",
+      "description": "Intelligent bookmark management browser extension",
+      "aiDescription": "Automatically classify, organize and search your bookmarks using AI technology",
+      "feedback": "Feedback",
+      "userGuide": "User Guide"
+    },
+    "save": {
+      "button": "Save Settings",
+      "success": "Settings saved",
+      "error": "Save failed"
+    },
+    "reset": {
+      "button": "Reset Settings"
+    },
+    "notification": {
+      "loadFailed": "Failed to load settings",
+      "resetConfirm": "Are you sure you want to reset all settings?",
+      "resetSuccess": "Settings reset",
+      "clearConfirm": "Are you sure you want to clear all category and tag data?\nThis will not delete bookmarks themselves.",
+      "clearSuccess": "Data cleared",
+      "clearFailed": "Clear failed"
+    },
+    "test": {
+      "enterApiKey": "❌ Please enter API Key",
+      "testing": "⏳ Testing...",
+      "success": "✅ Connection successful",
+      "failed": "❌ Connection failed",
+      "successSaved": "Connection successful, configuration saved automatically",
+      "failedMessage": "Connection failed: {error}"
+    }
+  }
+}

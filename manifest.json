@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AI Bookmark Manager",
   "version": "1.0.0",
-  "description": "智能书签管理工具 - 使用 AI 自动分类、整理和搜索您的书签",
+  "description": "AI-powered bookmark manager - Automatically classify, organize and search your bookmarks with AI",
   "permissions": [
     "bookmarks",
     "storage",
@@ -29,6 +29,12 @@
     "default_title": "AI Bookmark Manager"
   },
   "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["locales/*.json"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
@@ -41,14 +47,14 @@
         "default": "Ctrl+Shift+S",
         "mac": "Command+Shift+S"
       },
-      "description": "快速保存当前页面为书签"
+      "description": "Save current page as bookmark"
     },
     "open-sidebar": {
       "suggested_key": {
         "default": "Ctrl+Shift+B",
         "mac": "Command+Shift+B"
       },
-      "description": "打开书签侧边栏"
+      "description": "Open bookmarks sidebar"
     }
   }
 }

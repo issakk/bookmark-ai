@@ -7,8 +7,7 @@ chrome.runtime.onInstalled.addListener((details) => {
     console.log('Extension installed');
     // 初始化存储
     initializeStorage();
-    // 打开欢迎页面
-    chrome.tabs.create({ url: 'options.html' });
+    // 不再自动打开设置页面，只在需要 AI 功能时提示配置
   } else if (details.reason === 'update') {
     console.log('Extension updated');
   }

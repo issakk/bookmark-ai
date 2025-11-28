@@ -3,116 +3,241 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>书签管理 - AI Bookmark Manager</title>
+  <title data-i18n="manage.pageTitle">书签管理 - AI Bookmark Manager</title>
+  <link rel="stylesheet" href="styles/theme.css">
   <link rel="stylesheet" href="styles/manage.css">
 </head>
 <body>
-  <div class="container">
-    <!-- 侧边栏 -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h1>📚 书签管理</h1>
+  <div class="vscode-layout">
+    <!-- 活动栏 (Activity Bar) -->
+    <aside class="activity-bar">
+      <div class="activity-item active" data-view="bookmarks" data-i18n-title="manage.views.bookmarks" title="书签">
+        <span class="icon" id="bookmarksIcon"></span>
       </div>
-      
-      <div class="sidebar-stats">
-        <div class="stat-item">
-          <span class="stat-value" id="totalCount">0</span>
-          <span class="stat-label">总数</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value" id="selectedCount">0</span>
-          <span class="stat-label">已选</span>
-        </div>
+      <div class="activity-item" data-view="tools" data-i18n-title="manage.views.tools" title="工具">
+        <span class="icon" id="toolsIcon"></span>
       </div>
-
-      <div class="sidebar-actions">
-        <button id="addBookmarkBtn" class="btn-primary">
-          <span>➕</span> 添加书签
-        </button>
-        <button id="addFolderBtn" class="btn-secondary">
-          <span>📁</span> 新建文件夹
-        </button>
+      <div class="activity-item" data-view="ai-organize" data-i18n-title="manage.views.aiOrganize" title="AI 整理">
+        <span class="icon" id="aiOrganizeIcon"></span>
       </div>
-
-      <div class="sidebar-tools">
-        <h3>工具</h3>
-        <button id="classifySelectedBtn" class="tool-btn">
-          <span>🤖</span> AI 分类选中项
-        </button>
-        <button id="findDuplicatesBtn" class="tool-btn">
-          <span>🔍</span> 查找重复
-        </button>
-        <button id="findInvalidBtn" class="tool-btn">
-          <span>⚠️</span> 查找失效书签
-        </button>
-        <button id="deleteSelectedBtn" class="tool-btn danger">
-          <span>🗑️</span> 删除选中项
-        </button>
+      <div class="activity-spacer"></div>
+      <div class="activity-item" data-view="settings" data-i18n-title="common.settings" title="设置">
+        <span class="icon" id="settingsViewIcon"></span>
       </div>
     </aside>
 
-    <!-- 主内容区 -->
-    <main class="main-content">
-      <!-- 工具栏 -->
-      <div class="toolbar">
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input 
-            type="text" 
-            id="searchInput" 
-            placeholder="搜索书签..."
-            autocomplete="off"
-          />
+    <!-- 侧边栏 (Sidebar) -->
+    <aside class="sidebar" id="sidebar">
+      <!-- 书签视图 -->
+      <div class="sidebar-view" id="bookmarksView">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title" data-i18n="manage.sidebar.bookmarks">书签</h2>
+          <div class="sidebar-actions">
+            <button id="addBookmarkBtn" class="icon-btn" data-i18n-title="manage.actions.add" title="添加书签">
+              <span class="icon" id="addIcon"></span>
+            </button>
+            <button id="refreshSidebarBtn" class="icon-btn" data-i18n-title="common.refresh" title="刷新">
+              <span class="icon" id="refreshIcon"></span>
+            </button>
+          </div>
         </div>
-
-        <div class="toolbar-actions">
-          <select id="sortBy">
-            <option value="title">按标题</option>
-            <option value="date">按日期</option>
-            <option value="url">按 URL</option>
+        
+        <div class="sidebar-section">
+          <h3 class="section-title" data-i18n="manage.search.title">搜索</h3>
+          <div class="search-input-wrapper">
+            <input type="text" id="sidebarSearchInput" class="sidebar-input" data-i18n-placeholder="manage.search.placeholder" placeholder="搜索书签..." />
+            <button id="clearSearchBtn" class="clear-search-btn" style="display: none;" data-i18n-title="manage.search.clear" title="清除搜索">
+              <span class="icon" id="clearSearchIcon"></span>
+            </button>
+          </div>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3 class="section-title" data-i18n="manage.filter.title">筛选</h3>
+          <select id="categoryFilter" class="sidebar-select">
+            <option value="" data-i18n="manage.filter.allCategories">全部分类</option>
           </select>
-          
-          <select id="viewMode">
-            <option value="list">列表视图</option>
-            <option value="grid">网格视图</option>
+          <select id="tagFilter" class="sidebar-select">
+            <option value="" data-i18n="manage.filter.allTags">全部标签</option>
           </select>
-
-          <button id="selectAllBtn" class="btn-icon" title="全选">
-            <span>☑️</span>
+          <button id="clearFiltersBtn" class="sidebar-btn secondary" style="display: none;">
+            <span class="icon" id="clearIcon"></span>
+            <span data-i18n="manage.filter.clear">清空筛选</span>
           </button>
-          
-          <button id="refreshBtn" class="btn-icon" title="刷新">
-            <span>🔄</span>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3 class="section-title" data-i18n="manage.view.title">视图</h3>
+          <select id="viewMode" class="sidebar-select">
+            <option value="tree" data-i18n="manage.view.tree">树状视图</option>
+            <option value="list" data-i18n="manage.view.list">列表视图</option>
+          </select>
+          <select id="sortBy" class="sidebar-select">
+            <option value="title" data-i18n="manage.sort.byTitle">按标题</option>
+            <option value="date" data-i18n="manage.sort.byDate">按日期</option>
+            <option value="url" data-i18n="manage.sort.byUrl">按 URL</option>
+          </select>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3 class="section-title" data-i18n="manage.stats.title">统计</h3>
+          <div class="stats-item">
+            <span data-i18n="manage.stats.total">总计</span>
+            <span id="totalCount">0</span>
+          </div>
+          <div class="stats-item">
+            <span data-i18n="manage.stats.selected">已选</span>
+            <span id="selectedCount">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 工具视图 -->
+      <div class="sidebar-view" id="toolsView" style="display: none;">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title" data-i18n="manage.sidebar.tools">工具</h2>
+        </div>
+        <div class="sidebar-section">
+          <button id="classifySelectedBtn" class="sidebar-btn">
+            <span class="icon" id="aiIcon"></span>
+            <span data-i18n="manage.tools.classifySelected">AI 分类选中项</span>
+          </button>
+          <button id="findDuplicatesBtn" class="sidebar-btn">
+            <span class="icon" id="duplicateIcon"></span>
+            <span data-i18n="manage.tools.findDuplicates">查找重复</span>
+          </button>
+          <button id="findInvalidBtn" class="sidebar-btn">
+            <span class="icon" id="warningIcon"></span>
+            <span data-i18n="manage.tools.findInvalid">查找失效书签</span>
+          </button>
+          <button id="deleteSelectedBtn" class="sidebar-btn danger">
+            <span class="icon" id="deleteIcon"></span>
+            <span data-i18n="manage.tools.deleteSelected">删除选中项</span>
           </button>
         </div>
       </div>
 
-      <!-- 结果显示区域 -->
+      <!-- AI 整理视图 -->
+      <div class="sidebar-view" id="aiOrganizeView" style="display: none;">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title" data-i18n="manage.sidebar.aiOrganize">AI 整理</h2>
+        </div>
+        
+        <div class="sidebar-section">
+          <p class="sidebar-description" data-i18n="manage.aiOrganize.description">
+            使用 AI 自动分类和整理所有书签，为每个书签生成分类、标签和描述。
+          </p>
+          
+          <button id="startAiOrganizeBtn" class="sidebar-btn primary">
+            <span class="icon" id="startAiIcon"></span>
+            <span data-i18n="manage.aiOrganize.start">开始 AI 整理</span>
+          </button>
+          
+          <button id="stopAiOrganizeBtn" class="sidebar-btn danger-filled" style="display: none;">
+            <span class="icon" id="stopAiIcon"></span>
+            <span data-i18n="manage.aiOrganize.stop">停止整理</span>
+          </button>
+        </div>
+        
+        <!-- 进度区域 -->
+        <div class="sidebar-section" id="aiProgressSection" style="display: none;">
+          <h3 class="section-title" data-i18n="manage.aiOrganize.progressTitle">整理进度</h3>
+          <div class="progress-container">
+            <div class="progress-info">
+              <span id="aiProgressText" data-i18n="manage.aiOrganize.preparing">准备中...</span>
+              <span id="aiProgressPercent">0%</span>
+            </div>
+            <div class="progress-bar-track">
+              <div id="aiProgressFill" class="progress-bar-fill"></div>
+            </div>
+            <div class="progress-stats">
+              <span id="aiProgressStats">0 / 0</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 实时结果显示 -->
+        <div class="sidebar-section" id="aiResultsSection" style="display: none;">
+          <h3 class="section-title" data-i18n="manage.aiOrganize.resultsTitle">实时结果</h3>
+          <div class="ai-results-summary">
+            <div class="result-stat success">
+              <span data-i18n="manage.aiOrganize.success">成功</span>
+              <span id="aiSuccessCount">0</span>
+            </div>
+            <div class="result-stat failed">
+              <span data-i18n="manage.aiOrganize.failed">失败</span>
+              <span id="aiFailedCount">0</span>
+            </div>
+            <div class="result-stat skipped">
+              <span data-i18n="manage.aiOrganize.skipped">跳过</span>
+              <span id="aiSkippedCount">0</span>
+            </div>
+          </div>
+          <div id="aiResultsList" class="ai-results-list"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 主编辑器区域 (Editor) -->
+    <main class="editor-area">
+      <!-- 标题栏 -->
+      <div class="title-bar">
+        <div class="title-tabs">
+          <div class="title-tab active">
+            <span class="icon" id="tabIcon"></span>
+            <span data-i18n="manage.editor.allBookmarks">所有书签</span>
+          </div>
+        </div>
+        <div class="title-bar-actions">
+          <button id="selectAllBtn" class="icon-btn" data-i18n-title="manage.actions.selectAll" title="全选">
+            <span class="icon" id="selectAllIcon"></span>
+          </button>
+          <button id="expandAllBtn" class="icon-btn" data-i18n-title="manage.actions.expandAll" title="展开全部">
+            <span class="icon" id="expandIcon"></span>
+          </button>
+          <button id="collapseAllBtn" class="icon-btn" data-i18n-title="manage.actions.collapseAll" title="折叠全部">
+            <span class="icon" id="collapseIcon"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 结果面板 -->
       <div id="resultsPanel" class="results-panel" style="display: none;">
         <div class="results-header">
-          <h3 id="resultsTitle">检测结果</h3>
-          <button id="closeResults" class="btn-icon">✕</button>
+          <span class="icon" id="resultsIcon"></span>
+          <h3 id="resultsTitle" data-i18n="manage.results.title">检测结果</h3>
+          <button id="closeResults" class="icon-btn">
+            <span class="icon" id="closeResultsIcon"></span>
+          </button>
         </div>
         <div id="resultsContent" class="results-content"></div>
         <div class="results-footer">
-          <button id="deleteResultsBtn" class="btn-danger">删除这些书签</button>
-          <button id="cancelResultsBtn" class="btn-secondary">取消</button>
+          <button id="deleteResultsBtn" class="btn-danger">
+            <span class="icon" id="deleteResultsIcon"></span>
+            <span data-i18n="manage.results.delete">删除这些书签</span>
+          </button>
+          <button id="cancelResultsBtn" class="btn-secondary">
+            <span data-i18n="common.cancel">取消</span>
+          </button>
         </div>
       </div>
 
-      <!-- 书签列表 -->
-      <div id="bookmarkList" class="bookmark-list">
-        <div class="loading-indicator" id="loadingIndicator">
+      <!-- 书签内容区 -->
+      <div id="bookmarkContent" class="bookmark-content">
+        <div id="bookmarkList" class="bookmark-list"></div>
+        
+        <!-- 空状态 -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+          <span class="icon empty-icon" id="emptyIcon"></span>
+          <h2 data-i18n="manage.empty.title">暂无书签</h2>
+          <p data-i18n="manage.empty.description">点击添加按钮开始添加书签</p>
+        </div>
+
+        <!-- 加载状态 -->
+        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
           <div class="spinner"></div>
-          <p>加载中...</p>
+          <p data-i18n="common.loading">加载中...</p>
         </div>
-      </div>
-
-      <!-- 空状态 -->
-      <div id="emptyState" class="empty-state" style="display: none;">
-        <span class="empty-icon">📭</span>
-        <h2>暂无书签</h2>
-        <p>点击"添加书签"开始添加</p>
       </div>
     </main>
   </div>
@@ -122,30 +247,36 @@
     <div class="dialog-overlay"></div>
     <div class="dialog-content">
       <div class="dialog-header">
-        <h2 id="dialogTitle">添加书签</h2>
-        <button class="dialog-close" id="closeDialog">✕</button>
+        <h2 id="dialogTitle" data-i18n="manage.dialog.addBookmark">添加书签</h2>
+        <button class="icon-btn" id="closeDialog">
+          <span class="icon" id="closeDialogIcon"></span>
+        </button>
       </div>
       <div class="dialog-body">
         <div class="form-group">
-          <label for="bookmarkTitle">标题</label>
-          <input type="text" id="bookmarkTitle" placeholder="书签标题" />
+          <label for="bookmarkTitle" data-i18n="manage.dialog.title">标题</label>
+          <input type="text" id="bookmarkTitle" data-i18n-placeholder="manage.dialog.titlePlaceholder" placeholder="书签标题" />
         </div>
         <div class="form-group">
-          <label for="bookmarkUrl">URL</label>
+          <label for="bookmarkUrl" data-i18n="manage.dialog.url">URL</label>
           <input type="url" id="bookmarkUrl" placeholder="https://..." />
         </div>
         <div class="form-group">
-          <label for="bookmarkCategory">分类</label>
-          <input type="text" id="bookmarkCategory" placeholder="分类（可选）" />
+          <label for="bookmarkCategory" data-i18n="manage.dialog.category">分类</label>
+          <input type="text" id="bookmarkCategory" data-i18n-placeholder="manage.dialog.categoryPlaceholder" placeholder="分类（可选）" />
         </div>
         <div class="form-group">
-          <label for="bookmarkTags">标签</label>
-          <input type="text" id="bookmarkTags" placeholder="标签，用逗号分隔" />
+          <label for="bookmarkTags" data-i18n="manage.dialog.tags">标签</label>
+          <input type="text" id="bookmarkTags" data-i18n-placeholder="manage.dialog.tagsPlaceholder" placeholder="标签，用逗号分隔" />
         </div>
       </div>
       <div class="dialog-footer">
-        <button id="cancelDialog" class="btn-secondary">取消</button>
-        <button id="saveBookmark" class="btn-primary">保存</button>
+        <button id="cancelDialog" class="btn-secondary">
+          <span data-i18n="common.cancel">取消</span>
+        </button>
+        <button id="saveBookmark" class="btn-primary">
+          <span data-i18n="common.save">保存</span>
+        </button>
       </div>
     </div>
   </div>
@@ -155,9 +286,16 @@
     <span id="notificationText"></span>
   </div>
 
+  <script src="utils/icons.js"></script>
+  <script src="utils/i18n.js"></script>
+  <script src="utils/theme.js"></script>
   <script src="utils/storage.js"></script>
   <script src="utils/bookmarks.js"></script>
   <script src="utils/openai.js"></script>
+  <script src="scripts/manage-core.js"></script>
+  <script src="scripts/manage-tree.js"></script>
+  <script src="scripts/manage-filter.js"></script>
+  <script src="scripts/manage-results.js"></script>
   <script src="scripts/manage.js"></script>
 </body>
 </html>
