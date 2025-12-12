@@ -39,14 +39,29 @@
 
         <div class="form-group">
           <label for="model" data-i18n="options.openai.model">模型</label>
-          <select id="model">
-            <option value="gpt-4o-mini">GPT-4o Mini (<span data-i18n="options.openai.modelRecommended">推荐</span>)</option>
-            <option value="gpt-4o">GPT-4o</option>
-            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-            <option value="gpt-4-turbo">GPT-4 Turbo</option>
-          </select>
+          <input
+            type="text"
+            id="model"
+            data-i18n-placeholder="options.openai.modelPlaceholder"
+            placeholder="gpt-4o-mini"
+            autocomplete="off"
+          />
           <p class="help-text" data-i18n="options.openai.modelHelp">
             推荐使用 GPT-4o Mini，性价比最高
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="baseURL" data-i18n="options.openai.baseURL">Base URL</label>
+          <input
+            type="text"
+            id="baseURL"
+            data-i18n-placeholder="options.openai.baseURLPlaceholder"
+            placeholder="https://api.openai.com/v1"
+            autocomplete="off"
+          />
+          <p class="help-text" data-i18n="options.openai.baseURLHelp">
+            设置 OpenAI API 的基础 URL，可用于使用代理服务
           </p>
         </div>
 

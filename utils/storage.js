@@ -82,6 +82,17 @@ class StorageManager {
     return await this.set({ openaiModel: model });
   }
 
+  // 获取 OpenAI Base URL
+  async getOpenAIBaseURL() {
+    const baseURL = await this.get('openaiBaseURL');
+    return baseURL || 'https://api.openai.com/v1';
+  }
+
+  // 设置 OpenAI Base URL
+  async setOpenAIBaseURL(baseURL) {
+    return await this.set({ openaiBaseURL: baseURL });
+  }
+
   // 获取书签数据
   async getBookmarkData() {
     const data = await this.get('bookmarkData');

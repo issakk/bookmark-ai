@@ -9,9 +9,10 @@ class OpenAIService {
   // 初始化配置
   async initialize() {
     if (typeof chrome !== 'undefined' && chrome.storage) {
-      const data = await chrome.storage.local.get(['openaiKey', 'openaiModel']);
+      const data = await chrome.storage.local.get(['openaiKey', 'openaiModel', 'openaiBaseURL']);
       this.apiKey = data.openaiKey || '';
       this.model = data.openaiModel || 'gpt-4o-mini';
+      this.baseURL = data.openaiBaseURL || 'https://api.openai.com/v1';
     }
   }
 
@@ -23,6 +24,11 @@ class OpenAIService {
   // 设置模型
   setModel(model) {
     this.model = model;
+  }
+
+  // 设置 Base URL
+  setBaseURL(baseURL) {
+    this.baseURL = baseURL;
   }
 
   // 检查配置是否有效

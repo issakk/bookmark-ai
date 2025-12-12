@@ -27,14 +27,16 @@ async function loadSettings() {
   try {
     const apiKey = await window.StorageManager.getOpenAIKey();
     const model = await window.StorageManager.getOpenAIModel();
+    const baseURL = await window.StorageManager.getOpenAIBaseURL();
     const autoClassify = await window.StorageManager.getAutoClassify();
-    
+
     // 从 chrome.storage.sync 读取语言
     const syncData = await chrome.storage.sync.get(['language']);
     const language = syncData.language || 'auto';
-    
+
     document.getElementById('apiKey').value = apiKey;
     document.getElementById('model').value = model;
+    document.getElementById('baseURL').value = baseURL;
     document.getElementById('language').value = language;
     document.getElementById('autoClassify').checked = autoClassify;
   } catch (error) {
@@ -138,28 +140,30 @@ function bindEvents() {
 async function testOpenAIConnection() {
   const apiKey = document.getElementById('apiKey').value.trim();
   const model = document.getElementById('model').value;
+  const baseURL = document.getElementById('baseURL').value.trim();
   const resultSpan = document.getElementById('testResult');
-  
+
   if (!apiKey) {
     resultSpan.textContent = await window.I18n.t('options.test.enterApiKey');
     resultSpan.className = 'test-result error';
     return;
   }
-  
+
   resultSpan.textContent = await window.I18n.t('options.test.testing');
   resultSpan.className = 'test-result';
-  
+
   try {
     window.OpenAIService.setApiKey(apiKey);
     window.OpenAIService.setModel(model);
-    
+    window.OpenAIService.setBaseURL(baseURL || 'https://api.openai.com/v1');
+
     const response = await window.OpenAIService.chatCompletion([
       { role: 'user', content: 'Hello' }
     ], { max_tokens: 10 });
-    
+
     resultSpan.textContent = await window.I18n.t('options.test.success');
     resultSpan.className = 'test-result success';
-    
+
     // 测试成功后自动保存配置
     await saveSettings();
     showNotification(await window.I18n.t('options.test.successSaved'), 'success');
@@ -176,22 +180,24 @@ async function saveSettings() {
   try {
     const apiKey = document.getElementById('apiKey').value.trim();
     const model = document.getElementById('model').value;
+    const baseURL = document.getElementById('baseURL').value.trim();
     const language = document.getElementById('language').value;
     const autoClassify = document.getElementById('autoClassify').checked;
-    
+
     await window.StorageManager.setOpenAIKey(apiKey);
     await window.StorageManager.setOpenAIModel(model);
+    await window.StorageManager.setOpenAIBaseURL(baseURL);
     await window.StorageManager.setAutoClassify(autoClassify);
-    
+
     // 保存语言到 sync storage
     await chrome.storage.sync.set({ language });
-    
+
     // 应用语言
     await window.I18n.setLocale(language);
-    
+
     // 重新初始化 OpenAI 服务
     await window.OpenAIService.initialize();
-    
+
     showNotification(await window.I18n.t('options.save.success'), 'success');
   } catch (error) {
     console.error('Error saving settings:', error);
